@@ -1,0 +1,66 @@
+body {
+    margin: 0;
+}
+
+// 全局css使用
+
+.pointer {
+    cursor: pointer;
+}
+
+
+  //  flex布局+均匀布局
+  .flex {
+    display: flex;
+    justify-content: space-around;
+    align-items: center; /* 垂直居中 */
+  }
+
+
+
+
+// margin
+
+.mr2{
+  margin-right: 2rem;
+}
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.mr12 {
+    margin-right: 12px;
+}
+
+// padding
+
+.p_lr2{
+  padding: 0 2rem;
+}
+
+.pd_tb2 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+
+//icon使用
+.iconStyle {
+  width: 1em; 
+  height: 1em;
+  margin-right: 8px;
+}
+
+
+//文字垂直居中
+
+
+  // 放在全局变量里面去
+  .font_1rem {
+    font-size: 16px;
+  }
+
+  .inheritWH {
+    height: 100%;
+    width: 100%;
+  }
