@@ -33,8 +33,8 @@ export const constantRoutes = [
       {
         path: 'choose',
         name: 'choose',
-        // component: () => import('../views/system/choose.vue'),
-        component: '../views/system/choose.vue',
+        component: () => import('../views/system/choose.vue'),
+        // component: '../views/system/choose.vue',
       },
       {
         path: 'programme',
