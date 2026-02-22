@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { reactive, ref } from 'vue'
+  import { reactive, ref, watch } from 'vue'
   // 导入的组件
   import moreInfo from './moreInfo.vue'
 
@@ -25,70 +25,148 @@
   } from '@/constants/area'
 
   //api
-  import { listByCountry, login } from '@/api/system/programme'
+  import { getProgramByCon, getProgramList } from '@/api/system/programme'
   // 多选框
 
   const selectSingle = reactive({
-    area: COUNTRTY_LIST,
-    field: FIELD_LIST,
-    tuition: TUITION_RANGE,
+    region: COUNTRTY_LIST,
+    program_type: FIELD_LIST,
+    tuition_fee: TUITION_RANGE,
     duration: PROGRAMME_DURATION,
     special: SPECIAL_SEMISTER,
   })
 
-  const selectResult = ref({})
+  // placeholder 映射对象
+  const placeholderMap = {
+    region: '项目区域',
+    program_type: '项目类型',
+    tuition_fee: '学费范围',
+    duration: '学制年限',
+    special: '入学时间',
+  }
+
+  // 初始化 selectResult，确保每个值都是数组
+  const selectResult = ref({
+    region: [],
+    program_type: [],
+    tuition_fee: [],
+    duration: [],
+    special: [],
+  })
+
+  // 收集所有 select 的值并打印
+  const collectSelectValues = () => {
+    const collectedData = {}
+
+    // 遍历所有 selectKey，收集有值的项
+    Object.keys(selectSingle).forEach((key) => {
+      const value = selectResult.value[key]
+      if (value && Array.isArray(value) && value.length > 0) {
+        collectedData[key] = value
+      }
+    })
+
+    return collectedData
+  }
+
+  // 监听 selectResult 的变化，自动打印
+  watch(
+    selectResult,
+    () => {
+      collectSelectValues()
+    },
+    { deep: true },
+  )
 
   // 搜索框
-  const searchResult = ''
+  const searchResult = ref('')
+
+  // 提交搜索处理函数
+  const handleSearch = async () => {
+    try {
+      // 收集所有 select 的值（这就是 collectSelectValues 返回的值）
+      const params = collectSelectValues()
+
+      // 如果有搜索关键词，也加入参数
+      if (searchResult.value) {
+        params.keyword = searchResult.value
+      }
+
+      // 调用 POST 接口
+
+      programmeList.value = [
+        {
+          titleEG: 'Master of Technology in Software Engineering',
+          titleCN: '软件工程技术硕士',
+          feature: ['学费贵', '课程质量一般', 'offer时间晚', '性价比低'],
+          school: '新加坡国立大学',
+          image:
+            'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Business.png',
+          field: '泛计算机项目',
+        },
+        {
+          titleEG: 'Master of Technology in Software Engineering',
+          titleCN: '软件工程技术硕士',
+          feature: ['学费便宜', '课程质量好', '适合做开发'],
+          school: '南洋理工大学',
+          image:
+            'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Design%20and%20Engineering.png',
+          field: '计算机科学cs项目',
+        },
+        {
+          titleEG: 'Master of Science (Smart Industries and Digital Transformation',
+          titleCN: '可持续数据科学理学硕士',
+          feature: ['学费便宜', '课程质量好', '适合做开发'],
+          school: '南洋理工大学',
+          image:
+            'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Design%20and%20Engineering.png',
+          field: '计算机科学cs项目',
+        },
+        {
+          titleEG: 'Master of Technology in Software Engineering',
+          titleCN: '软件工程技术硕士',
+          feature: ['学费便宜', '课程质量好', '适合做开发'],
+          school: '南洋理工大学',
+          image:
+            'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Design%20and%20Engineering.png',
+          field: '计算机科学cs项目',
+        },
+        {
+          titleEG: 'MSc in Advanced Studies in Statistics and Data Science',
+          titleCN: '统计学和数据科学高级研究硕士',
+          feature: ['学费便宜', '课程质量好', '适合做开发'],
+          school: '南洋理工大学',
+          image:
+            'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Design%20and%20Engineering.png',
+          field: '计算机科学cs项目',
+        },
+      ]
+
+      const data = await getProgramByCon(params)
+      // 更新项目列表
+      // if (data && Array.isArray(data)) {
+      //   programmeList.value = data
+      // } else if (data && data.list && Array.isArray(data.list)) {
+      //   programmeList.value = data.list
+      // } else if (data && data.data && Array.isArray(data.data)) {
+      //   programmeList.value = data.data
+      // }
+
+      console.log('获取到的程序列表数据:', data)
+    } catch (error) {
+      console.error('搜索失败:', error)
+      // 错误已经在 request.js 中统一处理了
+    }
+  }
+
+  // 清空筛选
+  const handleClearFilter = async () => {
+    const data = await getProgramList()
+    console.log('获取到的程序列表数据:', data)
+  }
 
   // 项目列表
-  const programmeList = [
-    {
-      titleEG: 'Master of Technology in Software Engineering',
-      titleCN: '软件工程技术硕士',
-      feature: ['学费贵', '课程质量一般', 'offer时间晚', '性价比低'],
-      school: '新加坡国立大学',
-      image:
-        'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Business.png',
-      field: '泛计算机项目',
-    },
-    {
-      titleEG: 'Master of Technology in Software Engineering',
-      titleCN: '软件工程技术硕士',
-      feature: ['学费便宜', '课程质量好', '适合做开发'],
-      school: '南洋理工大学',
-      image:
-        'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Design%20and%20Engineering.png',
-      field: '计算机科学cs项目',
-    },
-    {
-      titleEG: 'Master of Science (Smart Industries and Digital Transformation',
-      titleCN: '可持续数据科学理学硕士',
-      feature: ['学费便宜', '课程质量好', '适合做开发'],
-      school: '南洋理工大学',
-      image:
-        'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Design%20and%20Engineering.png',
-      field: '计算机科学cs项目',
-    },
-    {
-      titleEG: 'Master of Technology in Software Engineering',
-      titleCN: '软件工程技术硕士',
-      feature: ['学费便宜', '课程质量好', '适合做开发'],
-      school: '南洋理工大学',
-      image:
-        'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Design%20and%20Engineering.png',
-      field: '计算机科学cs项目',
-    },
-    {
-      titleEG: 'MSc in Advanced Studies in Statistics and Data Science',
-      titleCN: '统计学和数据科学高级研究硕士',
-      feature: ['学费便宜', '课程质量好', '适合做开发'],
-      school: '南洋理工大学',
-      image:
-        'https://nusgs.nus.edu.sg/wp-content/uploads/nusgs-assets/images/faculty-banners/Design%20and%20Engineering.png',
-      field: '计算机科学cs项目',
-    },
-  ]
+  const programmeList = ref([])
 
   const programme = ref('english')
 
@@ -118,13 +196,19 @@
             slze="small"
           >
             <el-select
-              v-model="selectResult"
+              v-model="selectResult[selectKey]"
               clearable
-              placeholder="项目地区"
+              :placeholder="placeholderMap[selectKey]"
               multiple
               collapse-tags
               collapse-tags-tooltip
               :max-collapse-tags="3"
+              @change="
+                (val) => {
+                  // 确保值始终是数组
+                  selectResult[selectKey] = Array.isArray(val) ? val : val ? [val] : []
+                }
+              "
             >
               <el-option
                 v-for="item in selectValue"
@@ -158,14 +242,14 @@
                 size="default"
                 style="height: 38px"
                 :icon="Search"
-                @click="() => login()"
+                @click="handleSearch"
                 >提交搜索</el-button
               >
               <el-button
                 size="default"
                 style="height: 38px"
                 :icon="Delete"
-                @click="() => listByCountry()"
+                @click="handleClearFilter"
                 >清空筛选</el-button
               >
               <el-button
