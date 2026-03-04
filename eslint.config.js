@@ -26,6 +26,8 @@ export default [
     // Add this to disable the rule globally(or my index.vue is illgal)
     rules: {
       'vue/multi-word-component-names': 'off',
+      // 允许 <script> 不写 lang，或者写 lang="js"、lang="ts"
+      'vue/block-lang': 'off',
     },
   },
 ]

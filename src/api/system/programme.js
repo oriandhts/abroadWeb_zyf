@@ -19,7 +19,7 @@ export const getProgramList = async () => {
 }
 
 /**
- * 根据条件获取程序列表（POST 请求）
+ * 根据条件获取程序列表（POST 请求，支持分页）
  * @param {Object} params - 查询条件参数
  * @param {string[]} [params.region] - 项目区域
  * @param {string[]} [params.program_type] - 项目类型
@@ -27,25 +27,25 @@ export const getProgramList = async () => {
  * @param {string[]} [params.duration] - 学制年限
  * @param {string[]} [params.special] - 入学时间
  * @param {string} [params.keyword] - 搜索关键词
- * @returns {Promise} 返回程序列表数据
+ * @param {number} [params.page=1] - 页码
+ * @param {number} [params.page_size=8] - 每页条数
+ * @returns {Promise} 返回 { list, total, page, page_size, total_pages }
  */
 export const getProgramByCon = async (params = {}) => {
   try {
-    // 处理参数，确保格式正确
     const requestData = {
       region: params.region || [],
       program_type: params.program_type || [],
       tuition_fee: params.tuition_fee || [],
       duration: params.duration || [],
       special: params.special || [],
+      page: params.page ?? 1,
+      page_size: params.page_size ?? 8,
     }
 
-    // 如果有搜索关键词，添加到请求数据中
     if (params.keyword) {
       requestData.keyword = params.keyword
     }
-
-    console.log('发送给后端的请求数据:', requestData)
 
     const data = await service.post('/program/con', requestData)
     return data

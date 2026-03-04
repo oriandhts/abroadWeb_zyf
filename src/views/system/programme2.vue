@@ -1,6 +1,8 @@
 <script setup lang="js">
   import { reactive, ref, watch, computed, onMounted } from 'vue'
-  import { useRoute } from 'vue-router'
+  //todo:
+  // import { useRoute } from 'vue-router'
+
   // 导入的组件
   import moreInfo from './moreInfo.vue'
 
@@ -26,9 +28,9 @@
   } from '@/constants/area'
 
   //api
-  import { getProgramByCon } from '@/api/system/programme'
+  // todo:导入api
+  // import { getProgramByCon } from '@/api/system/programme'
   // 多选框
-
   const selectSingle = reactive({
     region: COUNTRTY_LIST,
     program_type: FIELD_LIST,
@@ -46,22 +48,22 @@
     special: '入学时间',
   }
 
-  const route = useRoute()
+  // const route = useRoute()
 
   // 跳转参数（如 english、hongkong）与 region 下拉选项文案对应，用于进入页时回显
-  const regionParamToLabel = {
-    english: '英国',
-    hongkong: '香港',
-    hongkong_sz: '香港',
-    singapore: '新加坡',
-    australia: '澳大利亚',
-    国内: '国内',
-    美国: '美国',
-    英国: '英国',
-    香港: '香港',
-    新加坡: '新加坡',
-    澳大利亚: '澳大利亚',
-  }
+  // const regionParamToLabel = {
+  //   english: '英国',
+  //   hongkong: '香港',
+  //   hongkong_sz: '香港',
+  //   singapore: '新加坡',
+  //   australia: '澳大利亚',
+  //   国内: '国内',
+  //   美国: '美国',
+  //   英国: '英国',
+  //   香港: '香港',
+  //   新加坡: '新加坡',
+  //   澳大利亚: '澳大利亚',
+  // }
 
   // 初始化 selectResult，确保每个值都是数组
   const selectResult = ref({
@@ -97,12 +99,14 @@
   )
 
   // 把 collectSelectValues 返回的所有 value 扁平为一维数组，用于筛选结果展示
+  // todo:
   const filterResultTags = computed(() => {
     const data = collectSelectValues()
     return Object.values(data).flat()
   })
 
   // 筛选结果标签轮流使用不同类型，更美观
+  // todo:
   const filterTagTypes = ['primary', 'success', 'warning', '']
   const filterTagTypeByIndex = (index) => filterTagTypes[index % filterTagTypes.length]
 
@@ -116,7 +120,7 @@
   const currentPage = ref(1)
   const pageSize = ref(8)
   const total = ref(0)
-  const totalPages = ref(0)
+  // const totalPages = ref(0)
   const pageSizeOptions = [8, 16, 24]
 
   // 项目列表（当前页数据用 data.list）
@@ -124,21 +128,12 @@
 
   /** 按当前筛选条件 + 分页请求列表，并更新 programmeList / total / totalPages / currentPage。可传入 opts 覆盖部分参数（如 region、page）。 */
   const fetchList = async (opts = {}) => {
-    const page = opts.page ?? currentPage.value
-    const size = opts.page_size ?? pageSize.value
-    const hasOverride = opts.region !== undefined || opts.program_type !== undefined
-    const params = hasOverride
-      ? { ...opts, page, page_size: size }
-      : { ...collectSelectValues(), page, page_size: size }
-    if (params.keyword === undefined && searchResult.value) params.keyword = searchResult.value
-
+    // const hasOverride = opts.region !== undefined || opts.program_type !== undefined
+    // const params = hasOverride ? { ...opts } : { ...collectSelectValues() }
     loading.value = true
     try {
-      const data = await getProgramByCon(params)
-      programmeList.value = data?.list ?? []
-      total.value = data?.total ?? 0
-      totalPages.value = data?.total_pages ?? 0
-      currentPage.value = data?.page ?? page
+      // todo:发起了请求
+      // 这里要发起请求
       if (data?.page_size != null) pageSize.value = data.page_size
     } finally {
       loading.value = false
@@ -197,20 +192,22 @@
 
   // 进入页时：若带有 region 参数，则把 region 的 select 置为对应项，并按该 region 查第 1 页
   onMounted(async () => {
-    const regionParam = route.query.region
+    // todo:
+    // const regionParam = route.query.region
     if (!regionParam) return
 
-    const regionLabel = regionParamToLabel[regionParam] ?? regionParam
-    const regionSelectValue = COUNTRTY_LIST.includes(regionLabel) ? [regionLabel] : []
+    // todo: 看看这里是在干嘛
+    // const regionLabel = regionParamToLabel[regionParam] ?? regionParam
+    // const regionSelectValue = COUNTRTY_LIST.includes(regionLabel) ? [regionLabel] : []
 
-    selectResult.value = {
-      ...selectResult.value,
-      region: regionSelectValue,
-    }
+    // selectResult.value = {
+    //   ...selectResult.value,
+    //   region: regionSelectValue,
+    // }
 
     try {
-      currentPage.value = 1
-      await fetchList({ page: 1, region: [regionParam] })
+      // todo:发起请求
+      await fetchList({ region: [regionParam] })
     } catch (e) {
       console.error('按 region 查询失败:', e)
     }

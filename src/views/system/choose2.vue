@@ -60,10 +60,8 @@
             <span class="country-text-wrapper">英国地区项目</span>
           </div>
         </div>
-        <div
-          class="country-icon-wrapper forShenzhen normalSize"
-          @click="() => routerToParam('programme', '国内')"
-        >
+        <!-- todo: -->
+        <div class="country-icon-wrapper forShenzhen normalSize">
           <img
             :src="FligSvg_sz"
             alt="港中深/港科广地区项目"
@@ -74,10 +72,8 @@
             <span class="country-text-wrapper">港中深/港科广地区项目</span>
           </div>
         </div>
-        <div
-          class="country-icon-wrapper forHongkong normalSize"
-          @click="() => routerToParam('programme', '香港')"
-        >
+        <!-- todo: -->
+        <div class="country-icon-wrapper forHongkong normalSize">
           <img
             :src="FlagSvg_hk"
             alt="香港地区项目"

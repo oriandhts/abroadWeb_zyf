@@ -6,7 +6,7 @@ export const routerTo = (parameter) => {
 
 // 带参数的 router（用 query 传 region，避免 Vue Router 4 丢弃未在 path 中声明的 params）
 export const routerToParam = (page, parameter) => {
-  router.push({ name: page, query: { region: parameter } })
+  // todo:
 }
 
 export const routerToByName = (page) => {
